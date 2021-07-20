@@ -20,7 +20,7 @@ async function main() {
         throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);
     }
     const matches = /.*version\s+(\d+\.\d+(\.\d+)?).*/i.exec(lines[0]);
-    if (!matches || matches.length < 2) {
+    if (!matches || matches.length < 2) { // First match is the complete string.
         throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);
     }
     core.setOutput('version', matches[1]);
