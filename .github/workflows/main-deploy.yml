@@ -45,7 +45,7 @@ jobs:
         with:
           release-version: 5.4
           github-token: ${{secrets.GITHUB_TOKEN}}
-      - uses: sersoft-gmbh/swift-version-action@master
+      - uses: sersoft-gmbh/swift-version-action@main
         id: swift-version
       - name: Check for reported version
         run: swift --version | grep -q '${{steps.swift-version.outputs.version}}'
