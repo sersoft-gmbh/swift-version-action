@@ -1,6 +1,6 @@
 # Swift Version Action
 
-![CI](https://github.com/sersoft-gmbh/swift-version-action/workflows/Deploy/badge.svg)
+[![Deploy](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/main-deploy.yml/badge.svg)](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/main-deploy.yml)
 
 This action reads the current Swift version.
 
