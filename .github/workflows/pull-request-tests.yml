@@ -1,0 +1,32 @@
+name: Pull Request Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ macos-11, ubuntu-latest ]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1.2.3
+        if: runner.os == 'macOS'
+        with:
+          xcode-version: ^12.5
+      - name: Install Swift
+        if: runner.os == 'Linux'
+        uses: sersoft-gmbh/SwiftyActions@v1.3
+        with:
+          release-version: 5.4
+          github-token: ${{secrets.GITHUB_TOKEN}}
+      - name: Install dependencies
+        run: sudo npm i -g typescript @vercel/ncc
+      - uses: actions/checkout@v2
+      - name: Generate action code
+        run: npm run deploy
+      - uses: './'
+        id: swift-version
+      - name: Check for reported version
+        run: swift --version | grep -q '${{steps.swift-version.outputs.version}}'

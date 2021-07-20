@@ -1,0 +1,12 @@
+name: Swift version
+description: Reads the current Swift version
+author: ser.soft GmbH
+outputs:
+  version:
+    description: The current Swift version (e.g. `5.4.2`).
+runs:
+  using: node12
+  main: dist/index.js
+branding:
+  color: orange
+  icon: info
