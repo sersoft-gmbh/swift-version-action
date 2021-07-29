@@ -1,13 +1,13 @@
 # Swift Version Action
 
-[![Deploy](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/main-deploy.yml/badge.svg)](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/main-deploy.yml)
+[![Tests](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/tests.yml/badge.svg)](https://github.com/sersoft-gmbh/swift-version-action/actions/workflows/tests.yml)
 
 This action reads the current Swift version.
 
 _Note_: 
     This action does not install or change the current Swift version. It just reads it.
     To change the Swift version on macOS, use `xcode-select` to select the corresponding Xcode version (or use an action like [maxim-lobanov/setup-xcode](https://github.com/maxim-lobanov/setup-xcode)).
-    To install Swift on Linux, you can use our [SwiftyActions](https://github.com/sersoft-gmbh/SwiftyActions) action.
+    To install Swift on Linux, you can use our [swifty-linux-action](https://github.com/sersoft-gmbh/swifty-linux-action) action.
 
 ## Inputs
 

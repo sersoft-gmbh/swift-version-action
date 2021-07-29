@@ -1,11 +1,41 @@
-name: Pull Request Tests
+name: Tests
 
 on:
+  push:
+    branches: [ main ]
+    paths-ignore: [ 'dist/*.js' ]
   pull_request:
     branches: [ main ]
 
 jobs:
+  deploy-action-code:
+    if: github.event_name == 'push'
+    name: Deploy Action Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install depenedencies
+        run: sudo npm i -g typescript @vercel/ncc
+      - uses: actions/checkout@v2.3.4
+        with:
+          token: ${{secrets.BOT_TOKEN}}
+      - name: Generate action code
+        run: npm run deploy
+      - name: Configure repository
+        run: |
+          git config user.name "${{secrets.BOT_USERNAME}}"
+          git config user.email "${{secrets.BOT_USERNAME}}@users.noreply.github.com"
+      - name: Commit changes
+        run: |
+          if ! git diff --exit-code --quiet; then
+            git add .
+            git commit -m "[AUTO] Update generated code"
+            git push
+          fi
+
   test:
+    needs: deploy-action-code
+    if: always() && !failure() && !cancelled()
+    name: Test Action
     strategy:
       matrix:
         os: [ macos-11, ubuntu-latest ]
@@ -17,16 +47,29 @@ jobs:
           xcode-version: ^12.5
       - name: Install Swift
         if: runner.os == 'Linux'
-        uses: sersoft-gmbh/SwiftyActions@v1.3
+        uses: sersoft-gmbh/swifty-linux-action@v1.3
         with:
           release-version: 5.4
           github-token: ${{secrets.GITHUB_TOKEN}}
       - name: Install dependencies
+        if: github.event_name == 'pull_request'
         run: sudo npm i -g typescript @vercel/ncc
       - uses: actions/checkout@v2
       - name: Generate action code
+        if: github.event_name == 'pull_request'
         run: npm run deploy
+      - uses: sersoft-gmbh/swift-version-action@main
+        if: github.event_name == 'push'
+        id: swift-version-main
       - uses: './'
-        id: swift-version
+        if: github.event_name == 'pull_request'
+        id: swift-version-local
+      - id: swift-version
+        run: |
+          if [ '${{github.event_name}}' == 'push' ]; then
+            echo "::set-output name=version::${{steps.swift-version-main.outputs.version}}"
+          else
+            echo "::set-output name=version::${{steps.swift-version-local.outputs.version}}"
+          fi
       - name: Check for reported version
         run: swift --version | grep -q '${{steps.swift-version.outputs.version}}'
