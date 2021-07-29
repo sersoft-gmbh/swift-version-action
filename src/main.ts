@@ -1,16 +1,13 @@
 import * as core from '@actions/core';
-import { exec } from '@actions/exec';
-import { EOL } from "os";
+import { getExecOutput } from '@actions/exec';
+import { EOL } from 'os';
 
 async function runCmd(cmd: string, args?: string[]): Promise<string> {
-    let stdOut = '';
-    await exec(cmd, args, {
+    const output = await getExecOutput(cmd, args, {
         failOnStdErr: true,
-        listeners: {
-            stdout: (data: Buffer) => stdOut += data.toString()
-        }
+        silent: !core.isDebug()
     });
-    return stdOut;
+    return output.stdout;
 }
 
 async function main() {
@@ -27,7 +24,7 @@ async function main() {
 }
 
 try {
-    main().catch(error => core.setFailed(error.message))
+    main().catch(error => core.setFailed(error.message));
 } catch (error) {
     core.setFailed(error.message);
 }
