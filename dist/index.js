@@ -30,14 +30,11 @@ const core = __importStar(__nccwpck_require__(24));
 const exec_1 = __nccwpck_require__(423);
 const os_1 = __nccwpck_require__(87);
 async function runCmd(cmd, args) {
-    let stdOut = '';
-    await exec_1.exec(cmd, args, {
+    const output = await exec_1.getExecOutput(cmd, args, {
         failOnStdErr: true,
-        listeners: {
-            stdout: (data) => stdOut += data.toString()
-        }
+        silent: !core.isDebug()
     });
-    return stdOut;
+    return output.stdout;
 }
 async function main() {
     const swiftVersionOutput = await runCmd('swift', ['--version']);
