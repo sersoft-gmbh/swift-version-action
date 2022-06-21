@@ -1,6 +1,6 @@
 {
   "name": "swift-version-action",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A GitHub action that reads the current Swift version.",
   "main": "dist/index.js",
   "scripts": {

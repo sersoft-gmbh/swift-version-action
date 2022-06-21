@@ -23,5 +23,5 @@ The version of Swift that's currently active (e.g. `5.4.2`).
 
 Use the following snippet to read the current swift version:
 ```yaml
-uses: sersoft-gmbh/swift-version-action@v1
+uses: sersoft-gmbh/swift-version-action@v2
 ```
