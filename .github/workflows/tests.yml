@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-action-code:
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' }}
     name: Deploy Action Code
     runs-on: ubuntu-latest
     steps:
@@ -17,59 +17,67 @@ jobs:
         run: sudo npm i -g typescript @vercel/ncc
       - uses: actions/checkout@v3.1.0
         with:
-          token: ${{secrets.BOT_TOKEN}}
+          token: ${{ secrets.BOT_TOKEN }}
       - name: Generate action code
         run: npm run deploy
       - name: Configure repository
+        env:
+          BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
         run: |
-          git config user.name "${{secrets.BOT_USERNAME}}"
-          git config user.email "${{secrets.BOT_USERNAME}}@users.noreply.github.com"
+          git config user.name "${BOT_USERNAME}"
+          git config user.email "${BOT_USERNAME}@users.noreply.github.com"
       - name: Commit changes
         run: |
           if ! git diff --exit-code --quiet; then
             git add .
-            git commit -m "[AUTO] Update generated code"
+            git commit -m '[AUTO] Update generated code'
             git push
           fi
 
   test:
     needs: deploy-action-code
-    if: always() && !failure() && !cancelled()
+    if: ${{ always() && !failure() && !cancelled() }}
     name: Test Action
     strategy:
       matrix:
         os: [ macos-12, ubuntu-latest ]
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: maxim-lobanov/setup-xcode@v1.5.0
-        if: runner.os == 'macOS'
+        if: ${{ runner.os == 'macOS' }}
         with:
-          xcode-version: ^13.4
+          xcode-version: ^14.0
       - name: Install Swift
-        if: runner.os == 'Linux'
+        if: ${{ runner.os == 'Linux' }}
         uses: sersoft-gmbh/swifty-linux-action@v2.1
         with:
           release-version: 5.6
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         run: sudo npm i -g typescript @vercel/ncc
       - uses: actions/checkout@v3.1.0
       - name: Generate action code
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         run: npm run deploy
       - uses: sersoft-gmbh/swift-version-action@main
-        if: github.event_name == 'push'
+        if: ${{ github.event_name == 'push' }}
         id: swift-version-main
       - uses: './'
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         id: swift-version-local
       - id: swift-version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BRANCH_VERSION: ${{ steps.swift-version-main.outputs.version }}
+          LOCAL_VERSION: ${{ steps.swift-version-local.outputs.version }}
         run: |
-          if [ '${{github.event_name}}' == 'push' ]; then
-            echo 'version=${{steps.swift-version-main.outputs.version}}' >> "${GITHUB_OUTPUT}"
+          if [ "${EVENT_NAME}" == 'push' ]; then
+            echo "version=${BRANCH_VERSION}" >> "${GITHUB_OUTPUT}"
           else
-            echo 'version=${{steps.swift-version-local.outputs.version}}' >> "${GITHUB_OUTPUT}"
+            echo "version=${LOCAL_VERSION}" >> "${GITHUB_OUTPUT}"
           fi
       - name: Check for reported version
-        run: swift --version | grep -q '${{steps.swift-version.outputs.version}}'
+        env:
+          DETECTED_VERSION: ${{ steps.swift-version.outputs.version }}
+        run: swift --version | grep -q "${DETECTED_VERSION}"
