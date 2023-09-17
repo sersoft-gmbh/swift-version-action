@@ -2,16 +2,15 @@ import * as core from '@actions/core';
 import { getExecOutput } from '@actions/exec';
 import { EOL } from 'os';
 
-async function runCmd(cmd: string, args?: string[]): Promise<string> {
-    const output = await getExecOutput(cmd, args, {
-        failOnStdErr: false,
+async function runCmd(cmd: string, ...args: string[]): Promise<string> {
+    const output = await getExecOutput(cmd, args.length <= 0 ? undefined : args, {
         silent: !core.isDebug(),
     });
     return output.stdout;
 }
 
 async function main() {
-    const swiftVersionOutput = await runCmd('swift', ['--version']);
+    const swiftVersionOutput = await runCmd('swift', '--version');
     const lines = swiftVersionOutput.trim().split(EOL);
     if (lines.length < 1) {
         throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);

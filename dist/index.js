@@ -33,15 +33,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
 const os_1 = __nccwpck_require__(37);
-async function runCmd(cmd, args) {
-    const output = await (0, exec_1.getExecOutput)(cmd, args, {
-        failOnStdErr: false,
+async function runCmd(cmd, ...args) {
+    const output = await (0, exec_1.getExecOutput)(cmd, args.length <= 0 ? undefined : args, {
         silent: !core.isDebug(),
     });
     return output.stdout;
 }
 async function main() {
-    const swiftVersionOutput = await runCmd('swift', ['--version']);
+    const swiftVersionOutput = await runCmd('swift', '--version');
     const lines = swiftVersionOutput.trim().split(os_1.EOL);
     if (lines.length < 1) {
         throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);

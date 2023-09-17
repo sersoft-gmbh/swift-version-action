@@ -17,11 +17,11 @@ _None_
 
 ### `version`
 
-The version of Swift that's currently active (e.g. `5.4.2`).
+The version of Swift that's currently active (e.g. `5.8.1`).
 
 ## Example Usage
 
 Use the following snippet to read the current swift version:
 ```yaml
-uses: sersoft-gmbh/swift-version-action@v2
+uses: sersoft-gmbh/swift-version-action@v3
 ```
