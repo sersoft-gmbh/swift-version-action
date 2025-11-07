@@ -12,13 +12,11 @@ async function runCmd(cmd: string, ...args: string[]): Promise<string> {
 async function main() {
     const swiftVersionOutput = await runCmd('swift', '--version');
     const lines = swiftVersionOutput.trim().split(EOL);
-    if (lines.length < 1) {
-        throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);
-    }
+    if (lines.length < 1)
+        throw new Error("Invalid output from `swift --version`: " + swiftVersionOutput);
     const matches = /.*version\s+(\d+\.\d+(\.\d+)?).*/i.exec(lines[0]);
-    if (!matches || matches.length < 2) { // First match is the complete string.
+    if (!matches || matches.length < 2) // The first match is the complete string.
         throw new Error('Invalid output from `swift --version`: ' + swiftVersionOutput);
-    }
     core.setOutput('version', matches[1]);
 }
 

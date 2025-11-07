@@ -7,7 +7,8 @@ This action reads the current Swift version.
 _Note_: 
     This action does not install or change the current Swift version. It just reads it.
     To change the Swift version on macOS, use `xcode-select` to select the corresponding Xcode version (or use an action like [maxim-lobanov/setup-xcode](https://github.com/maxim-lobanov/setup-xcode)).
-    To install Swift on Linux, you can use our [swifty-linux-action](https://github.com/sersoft-gmbh/swifty-linux-action) action.
+    To install Swift on Linux, you can either use [containers](https://hub.docker.com/_/swift), or use [Swiftly](https://www.swift.org/swiftly/documentation/swiftlydocs/).
+    There is also a [GitHub action for Swiftly](https://github.com/vapor/swiftly-action).
 
 ## Inputs
 
@@ -17,11 +18,11 @@ _None_
 
 ### `version`
 
-The version of Swift that's currently active (e.g. `5.8.1`).
+The version of Swift that's currently active (e.g. `6.2.1`).
 
 ## Example Usage
 
 Use the following snippet to read the current swift version:
 ```yaml
-uses: sersoft-gmbh/swift-version-action@v3
+uses: sersoft-gmbh/swift-version-action@v4
 ```

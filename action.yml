@@ -3,9 +3,9 @@ description: Reads the current Swift version
 author: ser.soft GmbH
 outputs:
   version:
-    description: The current Swift version (e.g. `5.8.1`).
+    description: The current Swift version (e.g. `6.2.1`).
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
 branding:
   color: orange
