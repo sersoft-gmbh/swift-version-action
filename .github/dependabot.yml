@@ -1,26 +1,24 @@
 version: 2
 
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/generate-action-code
     open-pull-requests-limit: 10
     schedule:
       interval: "daily"
       time: "07:00"
-      timezone: "Europe/Berlin"
+      timezone: Europe/Berlin
+    cooldown:
+      default-days: 3
 
-  - package-ecosystem: "github-actions"
-    directory: ".github/actions/generate-action-code"
+  - package-ecosystem: npm
+    directory: /
     open-pull-requests-limit: 10
     schedule:
-      interval: "daily"
+      interval: daily
       time: "07:00"
-      timezone: "Europe/Berlin"
-
-  - package-ecosystem: "npm"
-    directory: "/"
-    open-pull-requests-limit: 10
-    schedule:
-      interval: "daily"
-      time: "07:00"
-      timezone: "Europe/Berlin"
+      timezone: Europe/Berlin
+    cooldown:
+      default-days: 3
